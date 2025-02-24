@@ -54,13 +54,4 @@ module.exports = {
       return res.status(500).json({ message: "error", err });
     }
   },
-
-  getUsers: async (req, res) => {
-    try {
-      const users = await UserModel.find({}, { password: 0 });
-      return res.status(200).json({ data: users });
-    } catch (err) {
-      return res.status(500).json({ message: "error", err });
-    }
-  },
 };
