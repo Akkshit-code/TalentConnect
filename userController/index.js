@@ -1,4 +1,4 @@
-const UserModel = require("../models/UserModel");
+const { UserModel, CollegeModel } = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -52,6 +52,28 @@ module.exports = {
       return res.status(200).json({ jwtToken, tokenObject });
     } catch (err) {
       return res.status(500).json({ message: "error", err });
+    }
+  },
+
+  userDetails: async (req, res) => {
+    try {
+      const { name, location, ranking, averagepackage } = req.body;
+
+      // Example: Saving data to a database (Assume MongoDB & Mongoose)
+      const college = new CollegeModel({
+        name,
+        location,
+        ranking,
+        averagepackage,
+      });
+
+      await college.save();
+
+      return res
+        .status(201)
+        .json({ message: "College details saved successfully", college });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Server Error", error });
     }
   },
 };
