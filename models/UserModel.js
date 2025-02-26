@@ -44,6 +44,26 @@ const CollegeSchema = new Schema({
     required: true,
   },
 });
-const CollegeModel = mongoose.model("College", CollegeSchema);
-const UserModel = mongoose.model("users", UserSchema);
-module.exports = { UserModel, CollegeModel };
+const CollegeauthSchema = new Schema({
+  collegename: {
+    type: String,
+    required: true,
+  },
+  collegeemail: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  collegepassword: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+const CollegeModel = mongoose.model("College", CollegeSchema); // for getting the details of the college
+const UserModel = mongoose.model("students", UserSchema); // for signup and login of the user
+const CollegeAuthModel = mongoose.model("collegeauth", CollegeauthSchema); // for signup and login of the college
+module.exports = { UserModel, CollegeModel, CollegeAuthModel };
