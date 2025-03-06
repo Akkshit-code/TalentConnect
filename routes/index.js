@@ -6,34 +6,31 @@ const {
   registerCollege,
   loginCollege,
   studentdetails,
-  collegedetails,
-} = require("../userController");
+  reviewdetails,
+  cutoffdetails,
+  scholarshipdetails,
+} = require("../userController/index");
+
 const {
-  userRegisterValidate,
-  userLoginValidate,
-  userCollegeDetails,
+  studentRegisterValidate,
+  studentLoginValidate,
   collegeRegisterValidate,
   collegeLoginValidate,
-  studentdetailsLoginValidate,
-  collegeDetailsValidate,
+  studentdetailsValidate,
+  reviewsValidate,
+  cutoffsValidate,
+  scholarshipsValidate,
 } = require("../utils/userValidation");
-const { ensureAuthenticated } = require("../utils/auth");
-const routes = express.Router();
-const multer = require("multer");
 
-const storage = multer.memoryStorage(); // Store in memory or disk
-const upload = multer({ storage: storage });
+const router = express.Router();
 
-routes.post("/register", userRegisterValidate, registerUser); // register for user
-routes.post("/login", userLoginValidate, loginUser); //  login for user
-routes.post("/details", userCollegeDetails, userDetails); // for getting the college details
-routes.post("/collegeregister", collegeRegisterValidate, registerCollege); //  signup for the college admin
-routes.post("/collegelogin", collegeLoginValidate, loginCollege); //  login for the college admin
-routes.post("/studentdetails", studentdetailsLoginValidate, studentdetails); // for student profile
-// routes.post(
-//   "/collegedetails",
-//   upload.fields([{ name: "brochure" }, { name: "image" }]),
-//   collegedetails
-// );
+router.post("/register", studentRegisterValidate, registerUser);
+router.post("/login", studentLoginValidate, loginUser);
+router.post("/collegeregister", collegeRegisterValidate, registerCollege);
+router.post("/collegelogin", collegeLoginValidate, loginCollege);
+router.post("/studentdetails", studentdetailsValidate, studentdetails);
+router.post("/reviews", reviewsValidate, reviewdetails);
+router.post("/cutoffs", cutoffsValidate, cutoffdetails);
+router.post("/scholarships", scholarshipsValidate, scholarshipdetails);
 
-module.exports = routes;
+module.exports = router;

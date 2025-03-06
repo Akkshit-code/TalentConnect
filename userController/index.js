@@ -1,19 +1,17 @@
-const cloudinary = require("../config/cloudinary.js");
 const {
   UserModel,
   CollegeModel,
   CollegeAuthModel,
   StudentdetailsModel,
+  ReviewModel,
+  CutoffModel,
+  ScholarshipModel,
 } = require("../models/UserModel");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports = {
-  // validate req.body
-  // create MongoDB UserModel
-  // do password encryption
-  // return response to the client
   registerUser: async (req, res) => {
     const userModel = new UserModel(req.body);
     userModel.password = await bcrypt.hash(req.body.password, 10);
@@ -25,11 +23,6 @@ module.exports = {
       return res.status(500).json({ message: "error" });
     }
   },
-
-  // check user using email
-  // compare password
-  // create jwt token
-  // send resume to client
   loginUser: async (req, res) => {
     try {
       const user = await UserModel.findOne({ email: req.body.email });
@@ -156,8 +149,6 @@ module.exports = {
     try {
       const { studentname, studentemail, studentphoneno, studentlocation } =
         req.body;
-
-      // Check if student already exists
       const existingStudent = await StudentdetailsModel.findOne({
         studentemail,
       });
@@ -166,16 +157,12 @@ module.exports = {
           .status(400)
           .json({ message: "Student profile already exists" });
       }
-
-      // Create new student profile
       const newStudent = new StudentdetailsModel({
         studentname,
         studentemail,
         studentphoneno,
         studentlocation,
       });
-
-      // Save to database
       await newStudent.save();
       res.status(201).json({
         message: "Student profile created successfully",
@@ -188,87 +175,78 @@ module.exports = {
     }
   },
 
-  // collegedetails: async (req, res) => {
-  //   try {
-  //     console.log("Received request body:", req.body);
-  //     console.log("Received files:", req.files);
+  reviewdetails: async (req, res) => {
+    try {
+      const { studentemail, rating, reviewtext, pros, cons } = req.body;
+      const review = new ReviewModel({
+        studentemail,
+        rating,
+        reviewtext,
+        pros,
+        cons,
+      });
+      const savedReview = await review.save();
 
-  //     // Extract fields
-  //     const {
-  //       name,
-  //       collegename,
-  //       location,
-  //       courses,
-  //       faculty,
-  //       placementStats,
-  //       averagepackage,
-  //       ranking,
-  //     } = req.body;
+      res.status(201).json({
+        message: "Review Added Successfully",
+        review: savedReview, // Return the saved review object
+      });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal Server Error", error: error.message });
+    }
+  },
 
-  //     // Ensure all required fields are present
-  //     if (
-  //       !name ||
-  //       !collegename ||
-  //       !location ||
-  //       !courses ||
-  //       !faculty ||
-  //       !placementStats ||
-  //       !averagepackage ||
-  //       !ranking
-  //     ) {
-  //       return res.status(400).json({ message: "Missing required fields" });
-  //     }
-
-  //     // Ensure files are uploaded
-  //     if (!req.files || !req.files.brochure || !req.files.image) {
-  //       return res
-  //         .status(400)
-  //         .json({ message: "Brochure and Image are required" });
-  //     }
-
-  //     // Upload files to Cloudinary
-  //     const brochureResult = await cloudinary.uploader.upload(
-  //       req.files.brochure[0].path, // ✅ Ensure multer stores files in disk
-  //       { resource_type: "auto" }
-  //     );
-
-  //     const imageResult = await cloudinary.uploader.upload(
-  //       req.files.image[0].path, // ✅ Use path, not buffer
-  //       { resource_type: "image" }
-  //     );
-
-  //     // Parse JSON fields
-  //     const parsedCourses = JSON.parse(courses);
-  //     const parsedFaculty = JSON.parse(faculty);
-  //     const parsedPlacementStats = JSON.parse(placementStats);
-
-  //     // Create College Entry
-  //     const newCollege = new CollegeModel({
-  //       name,
-  //       collegename,
-  //       location,
-  //       brochure: brochureResult.secure_url,
-  //       image: imageResult.secure_url,
-  //       courses: parsedCourses,
-  //       faculty: parsedFaculty,
-  //       placementStats: parsedPlacementStats,
-  //       averagepackage,
-  //       ranking,
-  //     });
-
-  //     await newCollege.save();
-  //     console.log("Saved to MongoDB", newCollege);
-
-  //     res.status(201).json({
-  //       message: "College details added successfully!",
-  //       college: newCollege,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error in collegedetails controller:", error);
-  //     res.status(500).json({
-  //       message: "Error adding college details",
-  //       error: error.message,
-  //     });
-  //   }
-  // },
+  cutoffdetails: async (req, res) => {
+    try {
+      const {
+        collegename,
+        coursename,
+        examname,
+        category,
+        quota,
+        cutoffrank,
+        admissionyear,
+      } = req.body;
+      const review = new CutoffModel({
+        collegename,
+        coursename,
+        examname,
+        category,
+        quota,
+        cutoffrank,
+        admissionyear,
+      });
+      const savedReview = await review.save();
+      return res.status(201).json({
+        message: "Cutoffs Added Successfully",
+        review: savedReview,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Internal Server Error", error: error.message });
+    }
+  },
+  scholarshipdetails: async (req, res) => {
+    try {
+      const { ScholarshipName, ScholarshipMoney, ScholarshipDescription } =
+        req.body;
+      const scholarships = new ScholarshipModel({
+        ScholarshipName,
+        ScholarshipMoney,
+        ScholarshipDescription,
+      });
+      const savedReview = await scholarships.save();
+      return res.status(201).json({
+        message: "Scholarships Added Successfully",
+        review: savedReview,
+      });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal Server Error", error: error.message });
+    }
+  },
 };

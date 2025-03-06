@@ -1,8 +1,8 @@
-import express from "express";
-import routes from "./routes/routes.js";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import "./config/db.js";
+const express = require("express");
+const routes = require("./routes/index");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+require("./config/db");
 
 dotenv.config();
 

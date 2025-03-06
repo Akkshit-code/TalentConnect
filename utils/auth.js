@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export const ensureAuthenticated = (req, res, next) => {
+const ensureAuthenticated = (req, res, next) => {
   if (!req.headers["authorization"]) {
     return res.status(403).json({ message: "Token is required" });
   }
@@ -10,6 +10,10 @@ export const ensureAuthenticated = (req, res, next) => {
   } catch (err) {
     return res
       .status(403)
-      .json({ message: "Token is not valid, or it's expired" });
+      .json({ message: "Token is not valid or it's expired" });
   }
+};
+
+module.exports = {
+  ensureAuthenticated,
 };
